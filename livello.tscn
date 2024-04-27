@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://evqngvnh3lwl"]
+
+[ext_resource type="PackedScene" uid="uid://dyeaq1ovrucrg" path="res://generatore_livello.tscn" id="1_3jvw8"]
+[ext_resource type="PackedScene" uid="uid://b35cdeyhnn150" path="res://cella.tscn" id="2_ademr"]
+
+[node name="Livello" type="Node2D"]
+
+[node name="Generatore_livello" parent="." instance=ExtResource("1_3jvw8")]
+position = Vector2(100, 100)
+cella_template = ExtResource("2_ademr")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b35cdeyhnn150"]
+
+[ext_resource type="Script" path="res://cella.gd" id="1_nq28v"]
+
+[node name="Cella" type="Sprite2D"]
+script = ExtResource("1_nq28v")
