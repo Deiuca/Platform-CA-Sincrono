@@ -25,16 +25,13 @@ func _ready():
 	
 	#Determina la scala delle Celle in base alla dimensione delle texture
 	var tex_size = self.tipi_livello[self.tipi_livello.keys()[0]].get_size()
-	var scala_x = width / tex_size.x
-	var scala_y = height / tex_size.y
 	
 	#Popolo array Celle
 	for ih in self.height:
 		for iw in self.width:
 			var istanza = cella_template.instantiate()
 			istanza.inizializza(self.tipi_livello, self.randomGenerator)
-			istanza.position = Vector2(iw*self.width, ih*self.height)
-			istanza.scale = Vector2(scala_x,scala_y)
+			istanza.position = Vector2(iw*tex_size.x, ih*tex_size.y)
 			self.celle.append(istanza)
 			
 			
@@ -68,14 +65,14 @@ func _ready():
 		if (indx+(self.width)) < self.celle.size() and (indx+(self.width))/self.width == (indx+(self.width+1))/self.width:
 			cella.vicini[7] = self.celle[indx+(self.width+1)]
 	
-	#Sprite on screen
-	for cella in self.celle:
-		add_child(cella)
-	
 	#Ultima riga collassata a muro x fare pavimento
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
 		self.celle[e].set_tipo(Init.tipi.MURO)
-
+	
+	#Sprite on screen
+	for cella in self.celle:
+		add_child(cella)
+		cella.determina_tipo()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

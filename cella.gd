@@ -23,34 +23,44 @@ func determina_tipo():
 	
 	var num_vicini_muro = vicini_con_stato(Init.tipi.MURO)
 	var num_vicini_aria = vicini_con_stato(Init.tipi.ARIA)
-	
 	#Regole
 	
-	#Se tutti vicini sono ARIA 25% diventi muro
-	if num_vicini_aria == 8:
-		probabilita_diventi_tipo(25.0, Init.tipi.MURO)
-	#Se Gsx G Gdx sono muro 40% diventi muro
-	if Init.tipi.MURO == self.vicini[7].tipo == self.vicini[6].tipo == self.vicini[5].tipo:
-		probabilita_diventi_tipo(40.0, Init.tipi.MURO)
+	#Se tutti vicini sono ARIA 1.5% diventi muro
+	if num_vicini_aria == 8 and self.position.y > (self.texture.get_size().y * 2) :
+		probabilita_diventi_tipo(1.5, Init.tipi.MURO)
+		return
+	
+	#Se Gsx G Gdx sono muro 10% diventi muro
+	if(are_cells_stato([self.vicini[7], self.vicini[6], self.vicini[5]], Init.tipi.MURO)):
+		probabilita_diventi_tipo(10.0, Init.tipi.MURO)
+		return
+		
 	#Se Dx è MURO e il resto ARIA
-	if self.vicini[4].tipi == Init.tipi.MURO and num_vicini_aria == 7:
-		probabilita_diventi_tipo(70.0, Init.tipi.MURO)
+	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and num_vicini_aria == 7:
+		probabilita_diventi_tipo(30.0, Init.tipi.MURO)
+		return
 
-func determina_se_accade(probabilita : float):
+func are_cells_stato(array_celle : Array[Sprite2D], tipo : Init.tipi, devono_esistere = false) -> bool:
+	for cella in array_celle:
+		if (((cella.tipo != tipo) if cella != null else (devono_esistere))):
+			return false
+	return true
+
+func determina_se_accade(probabilita : float) -> bool:
 	probabilita = fmod(probabilita, 100.0)
 	var random = self.randomGenerator.randf_range(0,100)
-	if probabilita <= random:
+	if random <= probabilita:
 		return true
 	return false
 	
-func probabilita_diventi_tipo(probabilita : float, stato_da_settare : Init.tipi):
+func probabilita_diventi_tipo(probabilita : float, tipo_da_settare : Init.tipi):
 	if determina_se_accade(probabilita):
-			self.set_tipo(stato_da_settare)
+			self.set_tipo(tipo_da_settare)
 
 func vicini_con_stato(tipo : Init.tipi) -> int:
 	var contatore = 0
 	for vicino in vicini:
-		if vicino.tipo == tipo:
+		if vicino != null and vicino.tipo == tipo:
 			contatore += 1
 	return contatore
 

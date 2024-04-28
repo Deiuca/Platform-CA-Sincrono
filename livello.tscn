@@ -8,3 +8,5 @@
 [node name="Generatore_livello" parent="." instance=ExtResource("1_3jvw8")]
 position = Vector2(100, 100)
 cella_template = ExtResource("2_ademr")
+height = 25
+width = 60
