@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dyeaq1ovrucrg"]
+[gd_scene load_steps=3 format=3 uid="uid://dyeaq1ovrucrg"]
 
 [ext_resource type="Script" path="res://generatore_livello.gd" id="1_4u7bi"]
+[ext_resource type="PackedScene" uid="uid://b35cdeyhnn150" path="res://cella.tscn" id="2_2h3oo"]
 
 [node name="Generatore_livello" type="Node2D"]
+position = Vector2(2.08165e-12, 2.08165e-12)
 script = ExtResource("1_4u7bi")
+cella_template = ExtResource("2_2h3oo")

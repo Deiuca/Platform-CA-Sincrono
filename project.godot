@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Platform Celluar Automata"
-run/main_scene="res://livello.tscn"
+run/main_scene="res://progetto.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 

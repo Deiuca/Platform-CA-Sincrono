@@ -8,6 +8,8 @@ extends Node2D
 
 var randomGenerator : RandomNumberGenerator = RandomNumberGenerator.new()
 
+var livello : Node2D
+
 #Ciò che una cella può essere in questo generatore, e le texture associate ad ciascun tipo di cella in questo mondo
 var tipi_livello = {
 	Init.tipi.ARIA: Init.aria,
@@ -20,18 +22,28 @@ var celle = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
+	#Crea Nodo livello
+	self.livello = Node2D.new()
+	self.livello.name = "Livello"
+	add_child(self.livello)
+	
 	#Determina il seed del Generatore di mondo
 	self.randomGenerator.set_seed(self.generator_seed)
+	print(generator_seed)
 	
 	#Determina la scala delle Celle in base alla dimensione delle texture
 	var tex_size = self.tipi_livello[self.tipi_livello.keys()[0]].get_size()
+	
+	var windows_size = get_viewport().size
+	var cell_scale = Vector2((windows_size.x/tex_size.x)/self.width, (windows_size.y/tex_size.y)/self.height)
 	
 	#Popolo array Celle
 	for ih in self.height:
 		for iw in self.width:
 			var istanza = cella_template.instantiate()
-			istanza.inizializza(self.tipi_livello, self.randomGenerator)
-			istanza.position = Vector2(iw*tex_size.x, ih*tex_size.y)
+			istanza.inizializza(self.tipi_livello, self.randomGenerator, Vector2(width, height))
+			istanza.position = Vector2(iw*tex_size.x*cell_scale.x, ih*tex_size.y*cell_scale.y)
+			istanza.scale = cell_scale
 			self.celle.append(istanza)
 			
 			
@@ -54,7 +66,7 @@ func _ready():
 			cella.vicini[6] = self.celle[indx+self.width]
 		#SuSx
 		if(indx-(self.width+1)) >= 0:
-			cella.vicini[0] = self.celle[indx-(self.width-1)]
+			cella.vicini[0] = self.celle[indx-(self.width+1)]
 		#SuDx
 		if ((indx-(self.width-1))/self.width) != indx/self.width:
 			cella.vicini[2] = self.celle[indx-(self.width-1)]
@@ -69,11 +81,21 @@ func _ready():
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
 		self.celle[e].set_tipo(Init.tipi.MURO)
 	
+	#Setta randomicamente seeds per piattaforme
+	
 	#Sprite on screen
-	for cella in self.celle:
-		add_child(cella)
-		cella.determina_tipo()
+	#for cella in self.celle:
+	for i in range(self.celle.size()):
+		self.celle[i].label.text = str(i)
+		self.livello.add_child(self.celle[i])
+		if i == 751:
+			pass
+		self.celle[i].determina_tipo()
 
+var test_counter = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	while test_counter < 2:
+		for i in range(self.celle.size()):
+			self.celle[i].determina_tipo()
+		test_counter += 1

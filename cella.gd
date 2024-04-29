@@ -6,18 +6,25 @@ extends Sprite2D
 var tipo : Init.tipi = self.default_tipo
 var tipi_livello = {}
 var randomGenerator : RandomNumberGenerator
+var grid_size : Vector2
 
 #Pattern: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
 var vicini = [null,null,null,null,null,null,null,null]
 
-func inizializza(tipi_livello : Dictionary, randomGenerator : RandomNumberGenerator):
+func inizializza(tipi_livello : Dictionary, randomGenerator : RandomNumberGenerator, grid_size :Vector2):
 	self.texture = tipi_livello[self.default_tipo]
 	self.tipi_livello = tipi_livello
 	self.randomGenerator = randomGenerator
+	self.grid_size = grid_size
+
+#Debug
+var label : Label = Label.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	#Debug
+	self.label.scale = Vector2(fmod(self.scale.x, 1)+0.2,fmod(self.scale.y, 1)+0.2)
+	#add_child(self.label)
 
 func determina_tipo():
 	
@@ -25,9 +32,9 @@ func determina_tipo():
 	var num_vicini_aria = vicini_con_stato(Init.tipi.ARIA)
 	#Regole
 	
-	#Se tutti vicini sono ARIA 1.5% diventi muro
-	if num_vicini_aria == 8 and self.position.y > (self.texture.get_size().y * 2) :
-		probabilita_diventi_tipo(1.5, Init.tipi.MURO)
+	#Se tutti vicini sono ARIA 1% diventi muro
+	if num_vicini_aria == 8 and self.position.y > (self.texture.get_size().y * 4 * self.scale.y) and self.position.y < ((self.grid_size.y - 4) * self.texture.get_size().y *self.scale.y):
+		probabilita_diventi_tipo(0.5, Init.tipi.MURO)
 		return
 	
 	#Se Gsx G Gdx sono muro 10% diventi muro
@@ -36,9 +43,10 @@ func determina_tipo():
 		return
 		
 	#Se Dx è MURO e il resto ARIA
-	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and num_vicini_aria == 7:
-		probabilita_diventi_tipo(30.0, Init.tipi.MURO)
+	if are_cells_stato([self.vicini[3]], Init.tipi.MURO) and num_vicini_aria == 7:
+		probabilita_diventi_tipo(60.0, Init.tipi.MURO)
 		return
+	
 
 func are_cells_stato(array_celle : Array[Sprite2D], tipo : Init.tipi, devono_esistere = false) -> bool:
 	for cella in array_celle:
