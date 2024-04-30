@@ -34,30 +34,48 @@ func determina_tipo():
 	var num_vicini_aria = vicini_con_stato(Init.tipi.ARIA)
 	var num_vicini_allargati_muro = vicini_allargati_con_stato(Init.tipi.MURO)
 	var num_vicini_allargati_aria = vicini_allargati_con_stato(Init.tipi.ARIA)
+	var num_vicini_allargati_piattaforma = vicini_allargati_con_stato(Init.tipi.PLATFORM)
 	
 	#Se tutti vicini sono ARIA 1.5% diventi muro
-	if (num_vicini_aria + num_vicini_allargati_aria) == 24 and self.position.y > (self.texture.get_size().y * 2 * self.scale.y) and self.position.y < ((self.grid_size.y - 4) * self.texture.get_size().y *self.scale.y):
-		if( not num_vicini_allargati_muro > 0):
+	if (num_vicini_aria + num_vicini_allargati_aria) == 24 :
+		if( self.tipo == Init.tipi.ARIA ):
 			probabilita_diventi_tipo(1.5, Init.tipi.PLATFORM)
-			
+			return
+
+	#Se è troppo vicina ad un MURO diventa aria
 	if self.tipo == Init.tipi.PLATFORM and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
 		set_tipo(Init.tipi.ARIA)
+		return
 	
 	#Se Gsx G Gdx sono muro 10% diventi muro
 	if(are_cells_stato([self.vicini[7], self.vicini[6], self.vicini[5]], Init.tipi.MURO) and are_cells_stato([self.vicini[2], self.vicini[0], self.vicini[1]], Init.tipi.ARIA)):
 		probabilita_diventi_tipo(10.0, Init.tipi.MURO)
 		return
 	
-	#Se Dx è PIATTAFORMA e sotto e sopra è aria
+	#Se a DDx,Dx,Sx,SSx è piattaforma, favorisci che diventi ARIA  
+	if are_cells_stato([self.vicini[3], self.vicini[4], self.vicinato_allargato[7], self.vicinato_allargato[8]], Init.tipi.PLATFORM):
+		if probabilita_diventi_tipo(30.0, Init.tipi.ARIA):
+			return
+	
+	#Se Dx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
 	if are_cells_stato([self.vicini[4]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicini[6], self.vicini[1]], Init.tipi.ARIA, true ):
-		probabilita_diventi_tipo(10.0, Init.tipi.PLATFORM)
-		return
+		if(num_vicini_allargati_piattaforma < 2):
+			if probabilita_diventi_tipo(15.0, Init.tipi.PLATFORM):
+				return
 	
-	#Se Sx è PIATTAFORMA e il resto ARIA
-	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicini[6], self.vicini[1]], Init.tipi.ARIA, true ):
-		probabilita_diventi_tipo(10.0, Init.tipi.PLATFORM)
-		return
+	#Se Sx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
+	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and num_vicini_aria == 7:
+		if(num_vicini_allargati_piattaforma < 2):
+			if probabilita_diventi_tipo(15.0, Init.tipi.PLATFORM):
+				return
 	
+	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicinato_allargato[7]], Init.tipi.ARIA, true):
+		set_tipo(Init.tipi.PLATFORM)
+	
+	if self.tipo == Init.tipi.PLATFORM and num_vicini_aria == 8 and num_vicini_allargati_piattaforma > 0:
+		set_tipo(Init.tipi.ARIA)
+		return
+
 func are_cells_stato(array_celle : Array[Sprite2D], tipo : Init.tipi, devono_esistere = false) -> bool:
 	for cella in array_celle:
 		if (((cella.tipo != tipo) if cella != null else (devono_esistere))):

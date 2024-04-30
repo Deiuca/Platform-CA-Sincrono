@@ -99,13 +99,13 @@ func _ready():
 			cella.vicinato_allargato[10] = giuDx.vicini[4]   
 			cella.vicinato_allargato[15] = giuDx.vicini[7]  
 			cella.vicinato_allargato[14] = giuDx.vicini[6]    
-			cella.vicinato_allargato[13] = giuDx.vicini[4]   
+			cella.vicinato_allargato[13] = giuDx.vicini[5]   
 		if cella.vicini[5] != null:
 			var giuSx = cella.vicini[5]
 			cella.vicinato_allargato[12] = giuSx.vicini[6] 
 			cella.vicinato_allargato[11] = giuSx.vicini[5] 
 			cella.vicinato_allargato[9] = giuSx.vicini[3] 
-			cella.vicinato_allargato[7] = giuSx.vicini[2] 
+			cella.vicinato_allargato[7] = giuSx.vicini[0] 
 		
 	#Ultima riga collassata a muro x fare pavimento
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
@@ -122,14 +122,15 @@ func _ready():
 	for i in range(self.celle.size()):
 		self.celle[i].label.text = str(i)
 		self.livello.add_child(self.celle[i])
-		if i == 751:
-			pass
-		self.celle[i].determina_tipo()
+
 
 var test_counter = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while test_counter < 16:
-		for i in range(self.celle.size()):
-			self.celle[i].determina_tipo()
+	while test_counter < 6:
+		cellular_automata()
 		test_counter += 1
+
+func cellular_automata():
+	for i in range(self.celle.size()):
+		self.celle[i].determina_tipo()
