@@ -8,5 +8,3 @@ script = ExtResource("1_i0e53")
 
 [node name="Generatore_livello" parent="." instance=ExtResource("1_clrtm")]
 position = Vector2(20, 20)
-height = 15
-width = 15

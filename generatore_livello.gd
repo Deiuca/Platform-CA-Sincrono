@@ -14,6 +14,7 @@ var livello : Node2D
 var tipi_livello = {
 	Init.tipi.ARIA: Init.aria,
 	Init.tipi.MURO: Init.muro,
+	Init.tipi.PLATFORM: Init.piattaorma
 }
 
 #Le celle che comporranno il mondo
@@ -25,6 +26,7 @@ func _ready():
 	#Crea Nodo livello
 	self.livello = Node2D.new()
 	self.livello.name = "Livello"
+	self.livello.position = Vector2(20,20)
 	add_child(self.livello)
 	
 	#Determina il seed del Generatore di mondo
@@ -78,19 +80,42 @@ func _ready():
 			cella.vicini[7] = self.celle[indx+(self.width+1)]
 	
 	#Vicinato Allargato
-
 	for cella in self.celle:
-		for vicino in cella.vicini:
-			if vicino != null:
-				for vicino_of_vicino in vicino.vicini:
-					# Aggiungi secondo_vicino solo se non è già un vicino
-					if vicino_of_vicino != null and not vicino_of_vicino in cella.vicini and not vicino_of_vicino == cella and not vicino_of_vicino in cella.vicinato_allargato:
-						cella.vicinato_allargato.append(vicino_of_vicino)
-	
-	
+		if cella.vicini[0] != null:
+			var suSx = cella.vicini[0]
+			cella.vicinato_allargato[0] = suSx.vicini[0] 
+			cella.vicinato_allargato[1] = suSx.vicini[1]  
+			cella.vicinato_allargato[5] = suSx.vicini[3] 
+			cella.vicinato_allargato[2] = suSx.vicini[2]   
+			cella.vicinato_allargato[7] = suSx.vicini[5]   
+		if cella.vicini[2] != null:
+			var suDx = cella.vicini[2]
+			cella.vicinato_allargato[3] = suDx.vicini[1]  
+			cella.vicinato_allargato[4] = suDx.vicini[2]   
+			cella.vicinato_allargato[6] = suDx.vicini[4] 
+			cella.vicinato_allargato[8] = suDx.vicini[7]  
+		if cella.vicini[7] != null:
+			var giuDx = cella.vicini[7]
+			cella.vicinato_allargato[10] = giuDx.vicini[4]   
+			cella.vicinato_allargato[15] = giuDx.vicini[7]  
+			cella.vicinato_allargato[14] = giuDx.vicini[6]    
+			cella.vicinato_allargato[13] = giuDx.vicini[4]   
+		if cella.vicini[5] != null:
+			var giuSx = cella.vicini[5]
+			cella.vicinato_allargato[12] = giuSx.vicini[6] 
+			cella.vicinato_allargato[11] = giuSx.vicini[5] 
+			cella.vicinato_allargato[9] = giuSx.vicini[3] 
+			cella.vicinato_allargato[7] = giuSx.vicini[2] 
+		
 	#Ultima riga collassata a muro x fare pavimento
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
 		self.celle[e].set_tipo(Init.tipi.MURO)
+	
+	#Pianta i "semi" per le piattaforme
+	for h in range(1,3):
+		var riga = ((((self.height/3)*h)-1)*self.width)-1
+		for w in range(1,4):
+			self.celle[(((self.width/4)*w))+riga].set_tipo(Init.tipi.PLATFORM)
 	
 	#Sprite on screen
 	#for cella in self.celle:
@@ -104,7 +129,7 @@ func _ready():
 var test_counter = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while test_counter < 2:
+	while test_counter < 16:
 		for i in range(self.celle.size()):
 			self.celle[i].determina_tipo()
 		test_counter += 1
