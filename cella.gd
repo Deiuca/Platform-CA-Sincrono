@@ -10,6 +10,7 @@ var grid_size : Vector2
 
 #Pattern: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
 var vicini = [null,null,null,null,null,null,null,null]
+var vicinato_allargato = []
 
 func inizializza(tipi_livello : Dictionary, randomGenerator : RandomNumberGenerator, grid_size :Vector2):
 	self.texture = tipi_livello[self.default_tipo]
@@ -34,7 +35,7 @@ func determina_tipo():
 	
 	#Se tutti vicini sono ARIA 1% diventi muro
 	if num_vicini_aria == 8 and self.position.y > (self.texture.get_size().y * 4 * self.scale.y) and self.position.y < ((self.grid_size.y - 4) * self.texture.get_size().y *self.scale.y):
-		probabilita_diventi_tipo(0.5, Init.tipi.MURO)
+		probabilita_diventi_tipo(1.5, Init.tipi.MURO)
 		return
 	
 	#Se Gsx G Gdx sono muro 10% diventi muro

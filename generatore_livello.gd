@@ -77,11 +77,20 @@ func _ready():
 		if (indx+(self.width)) < self.celle.size() and (indx+(self.width))/self.width == (indx+(self.width+1))/self.width:
 			cella.vicini[7] = self.celle[indx+(self.width+1)]
 	
+	#Vicinato Allargato
+
+	for cella in self.celle:
+		for vicino in cella.vicini:
+			if vicino != null:
+				for vicino_of_vicino in vicino.vicini:
+					# Aggiungi secondo_vicino solo se non è già un vicino
+					if vicino_of_vicino != null and not vicino_of_vicino in cella.vicini and not vicino_of_vicino == cella and not vicino_of_vicino in cella.vicinato_allargato:
+						cella.vicinato_allargato.append(vicino_of_vicino)
+	
+	
 	#Ultima riga collassata a muro x fare pavimento
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
 		self.celle[e].set_tipo(Init.tipi.MURO)
-	
-	#Setta randomicamente seeds per piattaforme
 	
 	#Sprite on screen
 	#for cella in self.celle:
