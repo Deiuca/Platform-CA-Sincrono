@@ -1,5 +1,7 @@
 extends Sprite2D
 
+class_name Cella
+
 #ARIA è il default stato di una cella
 @export var default_tipo : Init.tipi = Init.tipi.ARIA
 
@@ -41,34 +43,54 @@ func determina_tipo():
 		if( self.tipo == Init.tipi.ARIA ):
 			probabilita_diventi_tipo(1.5, Init.tipi.PLATFORM)
 			return
-
-	#Se è troppo vicina ad un MURO diventa aria
-	if self.tipo == Init.tipi.PLATFORM and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
-		set_tipo(Init.tipi.ARIA)
-		return
 	
 	#Se Gsx G Gdx sono muro 10% diventi muro
 	if(are_cells_stato([self.vicini[7], self.vicini[6], self.vicini[5]], Init.tipi.MURO) and are_cells_stato([self.vicini[2], self.vicini[0], self.vicini[1]], Init.tipi.ARIA)):
 		probabilita_diventi_tipo(10.0, Init.tipi.MURO)
 		return
+		
+	#Se è troppo vicina ad un MURO diventa aria
+	if  self.tipo != Init.tipi.MURO and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
+		set_tipo(Init.tipi.ARIA)
+		return
 	
-	#Se a DDx,Dx,Sx,SSx è piattaforma, favorisci che diventi ARIA  
-	if are_cells_stato([self.vicini[3], self.vicini[4], self.vicinato_allargato[7], self.vicinato_allargato[8]], Init.tipi.PLATFORM):
+	#Se a VDx,Dx,Sx,VSx è piattaforma, favorisci che diventi ARIA  
+	if are_cells_stato([self.vicini[3], self.vicini[4], self.vicinato_allargato[7], self.vicinato_allargato[8]], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE]):
 		if probabilita_diventi_tipo(30.0, Init.tipi.ARIA):
 			return
-	
+			
 	#Se Dx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
 	if are_cells_stato([self.vicini[4]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicini[6], self.vicini[1]], Init.tipi.ARIA, true ):
 		if(num_vicini_allargati_piattaforma < 2):
-			if probabilita_diventi_tipo(15.0, Init.tipi.PLATFORM):
+			if probabilita_diventi_tipo(20.0, Init.tipi.PLATFORM):
 				return
 	
-	#Se Sx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
+	#Se Sx è PIATTAFORMA e sotto e sopra è aria, diventa PLATFORM
 	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and num_vicini_aria == 7:
 		if(num_vicini_allargati_piattaforma < 2):
 			if probabilita_diventi_tipo(15.0, Init.tipi.PLATFORM):
 				return
 	
+	#Piazza una rampa giu quando tra piattaforma e aria e sotto aria e se è già un platform
+	if are_cells_stato([self.vicini[3]], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE], true) and are_cells_stato([self.vicini[4]], Init.tipi.ARIA):
+		if are_cells_stato([self.vicini[4]], Init.tipi.ARIA) and self.tipo == Init.tipi.PLATFORM:
+			if probabilita_diventi_tipo(10.0, Init.tipi.RAMPA_DOWN):
+				return
+	
+	#Se VSx, Sx è platform & Dx aria, diventa EDGE 
+	if(are_cells_stato([self.vicini[3], self.vicinato_allargato[7]], Init.tipi.PLATFORM, true)) and not are_cells_stato([self.vicini[3]], Init.tipi.EDGE_DOWN):
+		if are_cells_stato([self.vicini[4]], Init.tipi.ARIA):
+			if probabilita_diventi_tipo(10.0, Init.tipi.EDGE_DOWN):
+				return
+	
+	#Se Sx Dx è platform, può diventare ostacolo
+	if(are_cells_stato([self.vicini[3],self.vicini[4]], Init.tipi.PLATFORM, true)):
+		if determina_se_accade(25.0):
+			if not probabilita_diventi_tipo(50.0, Init.tipi.PLATFORM_OBSTACLE):
+				set_tipo(Init.tipi.PLATFORM_OBSTACLE_DOWN)
+			return
+	
+	#Se Sx è PIATTAFORMA && VSx ARIA -> Piattaforma
 	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicinato_allargato[7]], Init.tipi.ARIA, true):
 		set_tipo(Init.tipi.PLATFORM)
 	
@@ -76,9 +98,21 @@ func determina_tipo():
 		set_tipo(Init.tipi.ARIA)
 		return
 
-func are_cells_stato(array_celle : Array[Sprite2D], tipo : Init.tipi, devono_esistere = false) -> bool:
+func are_cells_stato(array_celle : Array[Sprite2D], tipo , devono_esistere = false) -> bool:
+	if typeof(tipo) == TYPE_ARRAY:
+		return check_cells_stati(array_celle, tipo, devono_esistere)
+	else:
+		return check_cells_stato(array_celle, tipo, devono_esistere)
+
+func check_cells_stato(array_celle : Array[Sprite2D], tipo : Init.tipi, devono_esistere = false):
 	for cella in array_celle:
 		if (((cella.tipo != tipo) if cella != null else (devono_esistere))):
+			return false
+	return true
+
+func check_cells_stati(array_celle : Array[Sprite2D], tipi : Array, devono_esistere = false):
+	for cella in array_celle:
+		if ((( not cella.tipo in tipi) if cella != null else (devono_esistere))):
 			return false
 	return true
 

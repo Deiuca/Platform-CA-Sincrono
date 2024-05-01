@@ -10,11 +10,15 @@ var randomGenerator : RandomNumberGenerator = RandomNumberGenerator.new()
 
 var livello : Node2D
 
-#Ciò che una cella può essere in questo generatore, e le texture associate ad ciascun tipo di cella in questo mondo
+#Ciò che una cella può essere in questo generatore, e le texture associate ad ciascun tipo di cella in questo generatore
 var tipi_livello = {
 	Init.tipi.ARIA: Init.aria,
 	Init.tipi.MURO: Init.muro,
-	Init.tipi.PLATFORM: Init.piattaorma
+	Init.tipi.PLATFORM: Init.piattaforma,
+	Init.tipi.PLATFORM_OBSTACLE : Init.piattaforma_ostacolo,
+	Init.tipi.EDGE_DOWN : Init.edge_down,
+	Init.tipi.RAMPA_DOWN : Init.rampa_down,
+	Init.tipi.PLATFORM_OBSTACLE_DOWN : Init.piattaforma_ostacolo_down
 }
 
 #Le celle che comporranno il mondo
@@ -47,7 +51,6 @@ func _ready():
 			istanza.position = Vector2(iw*tex_size.x*cell_scale.x, ih*tex_size.y*cell_scale.y)
 			istanza.scale = cell_scale
 			self.celle.append(istanza)
-			
 			
 	#A ogni istanza nell'array di celle vengono definiti i suoi vicini
 	for indx in range(self.celle.size()):
@@ -123,11 +126,10 @@ func _ready():
 		self.celle[i].label.text = str(i)
 		self.livello.add_child(self.celle[i])
 
-
 var test_counter = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while test_counter < 6:
+	while test_counter < 7:
 		cellular_automata()
 		test_counter += 1
 
