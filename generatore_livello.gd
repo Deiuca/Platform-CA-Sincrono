@@ -18,7 +18,9 @@ var tipi_livello = {
 	Init.tipi.PLATFORM_OBSTACLE : Init.piattaforma_ostacolo,
 	Init.tipi.EDGE_DOWN : Init.edge_down,
 	Init.tipi.RAMPA_DOWN : Init.rampa_down,
-	Init.tipi.PLATFORM_OBSTACLE_DOWN : Init.piattaforma_ostacolo_down
+	Init.tipi.PLATFORM_OBSTACLE_DOWN : Init.piattaforma_ostacolo_down,
+	Init.tipi.MURO_RAMPA_DOWN : Init.muro_rampa_down,
+	Init.tipi.MURO_RAMPA_UP : Init.muro_rampa_up
 }
 
 #Le celle che comporranno il mondo

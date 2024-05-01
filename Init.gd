@@ -2,13 +2,14 @@ extends Node2D
 
 #Tipi di cella in questo progetto
 enum tipi {
-ARIA, MURO, 
+ARIA, 
+MURO, MURO_RAMPA_DOWN, MURO_RAMPA_UP,
 PLATFORM, PLATFORM_OBSTACLE, PLATFORM_OBSTACLE_DOWN,
 EDGE_DOWN, 
-RAMPA_DOWN
+RAMPA_DOWN,
 }
 
-#Textures nel progetto
+#Risorse Texture nel progetto
 #N.B. PRE-COND: tutte le texture devono avere le stesse dimensioni!!!
 var aria = preload("res://Texture/trasparente.png")
 var muro = preload("res://Texture/nero.png")
@@ -17,3 +18,5 @@ var piattaforma_ostacolo = preload("res://Texture/piattaforma_ostacolo.png")
 var piattaforma_ostacolo_down = preload("res://Texture/piattaforma_ostacolo_down.png")
 var edge_down = preload("res://Texture/edge_down.png")
 var rampa_down = preload("res://Texture/rampa_down.png")
+var muro_rampa_down = preload("res://Texture/muro_ramp.png")
+var muro_rampa_up = preload("res://Texture/muro_rampa_up.png")

@@ -46,11 +46,19 @@ func determina_tipo():
 	
 	#Se Gsx G Gdx sono muro 10% diventi muro
 	if(are_cells_stato([self.vicini[7], self.vicini[6], self.vicini[5]], Init.tipi.MURO) and are_cells_stato([self.vicini[2], self.vicini[0], self.vicini[1]], Init.tipi.ARIA)):
-		probabilita_diventi_tipo(10.0, Init.tipi.MURO)
-		return
+		if  not are_cells_stato([self.vicini[3]], [Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]) and not are_cells_stato([self.vicini[4]], [Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]):
+			if probabilita_diventi_tipo(10.0, Init.tipi.MURO):
+				return
+	
+	if are_cells_stato([self.vicini[3]], Init.tipi.MURO)  and are_cells_stato([self.vicini[4]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true) and self.tipo == Init.tipi.MURO:
+		set_tipo(Init.tipi.MURO_RAMPA_DOWN)
+	
+	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and are_cells_stato([self.vicini[3]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true) and self.tipo == Init.tipi.MURO:
+		set_tipo(Init.tipi.MURO_RAMPA_UP)
+		
 		
 	#Se è troppo vicina ad un MURO diventa aria
-	if  self.tipo != Init.tipi.MURO and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
+	if not are_cells_stato([self], [Init.tipi.MURO, Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]) and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
 		set_tipo(Init.tipi.ARIA)
 		return
 	
@@ -125,8 +133,9 @@ func determina_se_accade(probabilita : float) -> bool:
 	
 func probabilita_diventi_tipo(probabilita : float, tipo_da_settare : Init.tipi)-> bool:
 	if determina_se_accade(probabilita):
-			self.set_tipo(tipo_da_settare)
-			return true
+			if self.tipo != tipo_da_settare:
+				self.set_tipo(tipo_da_settare)
+				return true
 	return false
 
 func vicini_con_stato(tipo : Init.tipi) -> int:
