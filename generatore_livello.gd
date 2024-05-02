@@ -20,7 +20,8 @@ var tipi_livello = {
 	Init.tipi.RAMPA_DOWN : Init.rampa_down,
 	Init.tipi.PLATFORM_OBSTACLE_DOWN : Init.piattaforma_ostacolo_down,
 	Init.tipi.MURO_RAMPA_DOWN : Init.muro_rampa_down,
-	Init.tipi.MURO_RAMPA_UP : Init.muro_rampa_up
+	Init.tipi.MURO_RAMPA_UP : Init.muro_rampa_up,
+	Init.tipi.NEMICO : Init.nemico
 }
 
 #Le celle che comporranno il mondo
@@ -131,7 +132,7 @@ func _ready():
 var test_counter = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while test_counter < 7:
+	while test_counter < 8:
 		cellular_automata()
 		test_counter += 1
 

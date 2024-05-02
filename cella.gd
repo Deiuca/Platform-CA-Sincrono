@@ -49,13 +49,6 @@ func determina_tipo():
 		if  not are_cells_stato([self.vicini[3]], [Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]) and not are_cells_stato([self.vicini[4]], [Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]):
 			if probabilita_diventi_tipo(10.0, Init.tipi.MURO):
 				return
-	
-	if are_cells_stato([self.vicini[3]], Init.tipi.MURO)  and are_cells_stato([self.vicini[4]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true) and self.tipo == Init.tipi.MURO:
-		set_tipo(Init.tipi.MURO_RAMPA_DOWN)
-	
-	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and are_cells_stato([self.vicini[3]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true) and self.tipo == Init.tipi.MURO:
-		set_tipo(Init.tipi.MURO_RAMPA_UP)
-		
 		
 	#Se è troppo vicina ad un MURO diventa aria
 	if not are_cells_stato([self], [Init.tipi.MURO, Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]) and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
@@ -97,14 +90,46 @@ func determina_tipo():
 			if not probabilita_diventi_tipo(50.0, Init.tipi.PLATFORM_OBSTACLE):
 				set_tipo(Init.tipi.PLATFORM_OBSTACLE_DOWN)
 			return
+			
+	#Regola MURO RAMPA
+	if are_cells_stato([self.vicini[3]], Init.tipi.MURO) and are_cells_stato([self.vicini[4]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true):
+		set_tipo(Init.tipi.MURO_RAMPA_DOWN)
 	
+	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and are_cells_stato([self.vicini[3]], Init.tipi.ARIA) and are_cells_stato([self.vicini[6]], Init.tipi.MURO, true):
+		set_tipo(Init.tipi.MURO_RAMPA_UP)
+		
+	if are_cells_stato([self.vicini[4]], Init.tipi.MURO) and are_cells_stato([self.vicini[3]], Init.tipi.MURO):
+		set_tipo(Init.tipi.MURO)
+	
+	#Se VSx o Sx o VDx o Dx -> % NEMICO
+	var cond1 = are_cells_stato([self.vicini[7]], Init.tipi.PLATFORM_OBSTACLE, true)
+	var cond2 = are_cells_stato([self.vicinato_allargato[9]], Init.tipi.PLATFORM_OBSTACLE, true)
+	var cond3 = are_cells_stato([self.vicinato_allargato[10]], Init.tipi.PLATFORM_OBSTACLE, true)
+	if are_cells_stato([self.vicini[5]], Init.tipi.PLATFORM_OBSTACLE, true) or cond1 or cond2 or cond3:
+		if probabilita_diventi_tipo(15.0, Init.tipi.NEMICO):
+			pass
+		
+	#REGOLE CORREZIONE
+		
 	#Se Sx è PIATTAFORMA && VSx ARIA -> Piattaforma
 	if are_cells_stato([self.vicini[3]], Init.tipi.PLATFORM, true) and are_cells_stato([self.vicinato_allargato[7]], Init.tipi.ARIA, true):
 		set_tipo(Init.tipi.PLATFORM)
+		
+	if self.tipo == Init.tipi.ARIA and are_cells_stato([self.vicini[1]], Init.tipi.NEMICO, true):
+		self.vicini[1].set_tipo(Init.tipi.ARIA)
+		
+	#Se NEMICO e sotto NO platform -> Delete
+	if self.tipo == Init.tipi.NEMICO and not are_cells_stato([self.vicini[6]], Init.tipi.PLATFORM):
+		set_tipo(Init.tipi.ARIA)
+		
+	#Se NEMICO e vicino ha NEMICO -> ARIA
+	if self.tipo == Init.tipi.NEMICO and (are_cells_stato([self.vicini[3]], Init.tipi.NEMICO) or are_cells_stato([self.vicini[4]], Init.tipi.NEMICO)):
+		set_tipo((Init.tipi.ARIA))
 	
 	if self.tipo == Init.tipi.PLATFORM and num_vicini_aria == 8 and num_vicini_allargati_piattaforma > 0:
 		set_tipo(Init.tipi.ARIA)
 		return
+		
 
 func are_cells_stato(array_celle : Array[Sprite2D], tipo , devono_esistere = false) -> bool:
 	if typeof(tipo) == TYPE_ARRAY:
