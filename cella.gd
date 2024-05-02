@@ -50,10 +50,6 @@ func determina_tipo():
 			if probabilita_diventi_tipo(10.0, Init.tipi.MURO):
 				return
 		
-	#Se è troppo vicina ad un MURO diventa aria
-	if not are_cells_stato([self], [Init.tipi.MURO, Init.tipi.MURO_RAMPA_DOWN, Init.tipi.MURO_RAMPA_UP]) and (num_vicini_allargati_muro > 0 or num_vicini_muro > 0):
-		set_tipo(Init.tipi.ARIA)
-		return
 	
 	#Se a VDx,Dx,Sx,VSx è piattaforma, favorisci che diventi ARIA  
 	if are_cells_stato([self.vicini[3], self.vicini[4], self.vicinato_allargato[7], self.vicinato_allargato[8]], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE]):
