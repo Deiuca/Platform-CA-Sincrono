@@ -130,11 +130,15 @@ func _ready():
 		self.livello.add_child(self.celle[i])
 
 var test_counter = 0
+var numero_CA = 8
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while test_counter < 8:
+	while self.test_counter < self.numero_CA:
 		cellular_automata()
-		test_counter += 1
+		self.test_counter += 1
+	if self.test_counter == (self.numero_CA):
+		for i in range(self.celle.size()):
+			self.celle[i].correggi()
 
 func cellular_automata():
 	for i in range(self.celle.size()):
