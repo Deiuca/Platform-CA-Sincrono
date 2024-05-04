@@ -5,6 +5,7 @@ enum tipi {
 ARIA, 
 MURO, MURO_RAMPA_DOWN, MURO_RAMPA_UP,
 PLATFORM, PLATFORM_OBSTACLE, PLATFORM_OBSTACLE_DOWN,
+VERTICALE,
 EDGE_DOWN, 
 RAMPA_DOWN,
 NEMICO
@@ -22,3 +23,4 @@ var rampa_down = preload("res://Texture/rampa_down.png")
 var muro_rampa_down = preload("res://Texture/muro_ramp.png")
 var muro_rampa_up = preload("res://Texture/muro_rampa_up.png")
 var nemico = preload("res://Texture/nemico.png")
+var verticale = preload("res://Texture/verticale.png")
