@@ -54,7 +54,7 @@ func determina_tipo():
 			return
 		
 	#(4) Se Dx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
-	if are_cells_stato([4], Init.tipi.PLATFORM, true) and are_cells_stato([6, 1], Init.tipi.ARIA, true ) and not are_cells_stato([3], [Init.tipi.EDGE_DOWN, Init.tipi.RAMPA_DOWN]):
+	if are_cells_stato([4], Init.tipi.PLATFORM, true) and are_cells_stato([6, 1], Init.tipi.ARIA, true ) and not are_cells_stato([3], Init.tipi.EDGE_DOWN):
 		if(num_vicini_allargati_piattaforma < 4):
 			if probabilita_diventi_tipo(20.0, Init.tipi.PLATFORM):
 				return
@@ -144,7 +144,7 @@ func correggi():
 		set_tipo(Init.tipi.PLATFORM)
 		
 	#Se Dx è PIATTAFORMA && VDx ARIA -> Piattaforma
-	if self.tipo == Init.tipi.ARIA and are_cells_stato([4], Init.tipi.PLATFORM, true) and are_cells_stato([16], Init.tipi.ARIA, true) and not are_cells_stato([3], [Init.tipi.EDGE_DOWN, Init.tipi.RAMPA_DOWN]):
+	if self.tipo == Init.tipi.ARIA and are_cells_stato([4], Init.tipi.PLATFORM, true) and are_cells_stato([16], Init.tipi.ARIA, true) and not are_cells_stato([3], Init.tipi.EDGE_DOWN):
 		set_tipo(Init.tipi.PLATFORM)
 	
 	#Se NEMICO e sotto NO platform -> ARIA
@@ -164,7 +164,7 @@ func correggi():
 		set_tipo(Init.tipi.ARIA)
 	
 	#Se piattaform like e isolata -> ARIA
-	if self.tipo == Init.tipi.PLATFORM or self.tipo == Init.tipi.VERTICALE or self.tipo == Init.tipi.PLATFORM_OBSTACLE or self.tipo == Init.tipi.PLATFORM_OBSTACLE_DOWN or self.tipo == Init.tipi.EDGE_DOWN or self.tipo == Init.tipi.RAMPA_DOWN:
+	if self.tipo == Init.tipi.PLATFORM or self.tipo == Init.tipi.VERTICALE or self.tipo == Init.tipi.PLATFORM_OBSTACLE or self.tipo == Init.tipi.PLATFORM_OBSTACLE_DOWN or self.tipo == Init.tipi.EDGE_DOWN:
 		if num_vicini_muro > 0 or num_vicini_rampa_down > 0 or num_vicini_rampa_up >0:
 			set_tipo(Init.tipi.ARIA)
 	
