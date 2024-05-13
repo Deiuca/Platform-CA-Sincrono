@@ -36,7 +36,7 @@ func determina_tipo() -> Init.tipi:
 	var num_vicini_allargati_aria = vicini_allargati_con_stato(Init.tipi.ARIA)
 	var num_vicini_allargati_piattaforma = vicini_allargati_con_stato(Init.tipi.PLATFORM)
 	
-	#(1) Se tutti vicini sono ARIA % diventi muro
+	#(1) Se tutti vicini sono ARIA % diventi platform
 	if (num_vicini_aria + num_vicini_allargati_aria) == 24 :
 		if( self.tipo == Init.tipi.ARIA ):
 			if determina_se_accade(8.0):
@@ -101,12 +101,9 @@ func determina_tipo() -> Init.tipi:
 		if determina_se_accade(30.0):
 				return Init.tipi.NEMICO
 	
-	#Se nessuna regola applicata:
-	return self.default_tipo
-	
 	#Regole x RAMPE MURO
 	
-	#(13) Se Sx MURO; Dx ARIA; S MURO; SDx NON MURO 
+	#(13) Se Sx MURO; Dx ARIA; G MURO; GDx NON RAMPA 
 	if are_cells_stato([3], Init.tipi.MURO) and are_cells_stato([4], Init.tipi.ARIA) and are_cells_stato([6], Init.tipi.MURO, true) and  not are_cells_stato([7], Init.tipi.MURO_RAMPA_DOWN, true) :
 		if determina_se_accade(40.0):
 				return Init.tipi.MURO_RAMPA_DOWN
@@ -118,7 +115,10 @@ func determina_tipo() -> Init.tipi:
 	
 	#(15) Se Dx e SX MURO -> MURO
 	if are_cells_stato([4], Init.tipi.MURO) and are_cells_stato([3], Init.tipi.MURO):
-		set_tipo(Init.tipi.MURO)
+		return Init.tipi.MURO
+		
+	#Se nessuna regola applicata:
+	return self.tipo
 
 #Applica Regole Correzione
 func correggi():
@@ -143,6 +143,9 @@ func correggi():
 	
 	#Controllo se VERTICALE compatibile con vicinato
 	if self.tipo == Init.tipi.VERTICALE and ( (not are_cells_stato([6], Init.tipi.PLATFORM_OBSTACLE) or not are_cells_stato([1], Init.tipi.ARIA)) and (not are_cells_stato([6], Init.tipi.ARIA) or not are_cells_stato([1], [Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.EDGE_DOWN], true))):
+		set_tipo(Init.tipi.ARIA)
+	#Controllo se VERTICALE compatibile con vicinato
+	if self.tipo == Init.tipi.VERTICALE and not are_cells_stato([3,4], Init.tipi.ARIA):
 		set_tipo(Init.tipi.ARIA)
 	
 	#Se Sx è PIATTAFORMA && VSx ARIA -> Piattaforma

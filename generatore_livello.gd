@@ -92,8 +92,6 @@ func _ready():
 			cella.vicinato_allargato[0] = suSx.vicini[0] 
 			cella.vicinato_allargato[1] = suSx.vicini[1]  
 			cella.vicinato_allargato[5] = suSx.vicini[3] 
-			#cella.vicinato_allargato[2] = suSx.vicini[2]   
-			#cella.vicinato_allargato[7] = suSx.vicini[5]  
 		if cella.vicini[1] != null:
 			var su = cella.vicini[1]
 			cella.vicinato_allargato[2] = su.vicini[1]
@@ -104,8 +102,7 @@ func _ready():
 			var suDx = cella.vicini[2]
 			cella.vicinato_allargato[3] = suDx.vicini[1]  
 			cella.vicinato_allargato[4] = suDx.vicini[2]   
-			cella.vicinato_allargato[6] = suDx.vicini[4] 
-			#cella.vicinato_allargato[8] = suDx.vicini[7]  
+			cella.vicinato_allargato[6] = suDx.vicini[4]   
 		if cella.vicini[4] != null:
 			var dx = cella.vicini[4]
 			cella.vicinato_allargato[8] = dx.vicini[4]
@@ -114,7 +111,6 @@ func _ready():
 			cella.vicinato_allargato[10] = giuDx.vicini[4]   
 			cella.vicinato_allargato[15] = giuDx.vicini[7]  
 			cella.vicinato_allargato[14] = giuDx.vicini[6]    
-			#cella.vicinato_allargato[13] = giuDx.vicini[5] 
 		if cella.vicini[6] != null:
 			var giu = cella.vicini[6]
 			cella.vicinato_allargato[13] = giu.vicini[6]  
@@ -143,16 +139,17 @@ func _ready():
 var count = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while self.count < 20:
+	while self.count < 6:
 		cellular_automata()
+		for i in range(self.celle.size()):
+			self.celle[i].correggi()
+			pass
 		#TODO METODO CORREZIONI
 		self.count += 1
 
 func cellular_automata():
 	var nuova_griglia_stati = []
 	for i in range(self.celle.size()):
-		if i == 49:
-			pass
 		nuova_griglia_stati.append(self.celle[i].determina_tipo())
 	for i in range(self.celle.size()):
 		self.celle[i].set_tipo(nuova_griglia_stati[i])
