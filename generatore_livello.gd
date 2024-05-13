@@ -60,7 +60,7 @@ func _ready():
 		var cella = self.celle[indx]      
 		#Pattern dei viini: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
 		#Sx
-		if (indx-1) >= 0:
+		if (indx-1) >= 0 and indx/self.width == (indx-1)/self.width:
 			cella.vicini[3] = self.celle[indx-1]
 		#Dx
 		@warning_ignore("integer_division", "integer_division", "integer_division")
@@ -74,10 +74,10 @@ func _ready():
 			cella.vicini[6] = self.celle[indx+self.width]
 		#SuSx
 		if(indx-(self.width+1)) >= 0:
-			cella.vicini[0] = self.celle[indx-(self.width+1)]
+			cella.vicini[0] = self.celle[indx-self.width].vicini[3]
 		#SuDx
 		if ((indx-(self.width-1))/self.width) != indx/self.width:
-			cella.vicini[2] = self.celle[indx-(self.width-1)]
+			cella.vicini[2] = self.celle[indx-self.width].vicini[4]
 		#GiuSx
 		if (indx+(self.width-1)) < self.celle.size() and ((indx+(self.width-1))/self.width) != indx/self.width:
 			cella.vicini[5] = self.celle[indx+(self.width-1)]
@@ -92,26 +92,37 @@ func _ready():
 			cella.vicinato_allargato[0] = suSx.vicini[0] 
 			cella.vicinato_allargato[1] = suSx.vicini[1]  
 			cella.vicinato_allargato[5] = suSx.vicini[3] 
-			cella.vicinato_allargato[2] = suSx.vicini[2]   
-			cella.vicinato_allargato[7] = suSx.vicini[5]   
+			#cella.vicinato_allargato[2] = suSx.vicini[2]   
+			#cella.vicinato_allargato[7] = suSx.vicini[5]  
+		if cella.vicini[1] != null:
+			var su = cella.vicini[1]
+			cella.vicinato_allargato[2] = su.vicini[1]
+		if cella.vicini[3] != null:
+			var sx = cella.vicini[3]
+			cella.vicinato_allargato[7] = sx.vicini[3]
 		if cella.vicini[2] != null:
 			var suDx = cella.vicini[2]
 			cella.vicinato_allargato[3] = suDx.vicini[1]  
 			cella.vicinato_allargato[4] = suDx.vicini[2]   
 			cella.vicinato_allargato[6] = suDx.vicini[4] 
-			cella.vicinato_allargato[8] = suDx.vicini[7]  
+			#cella.vicinato_allargato[8] = suDx.vicini[7]  
+		if cella.vicini[4] != null:
+			var dx = cella.vicini[4]
+			cella.vicinato_allargato[8] = dx.vicini[4]
 		if cella.vicini[7] != null:
 			var giuDx = cella.vicini[7]
 			cella.vicinato_allargato[10] = giuDx.vicini[4]   
 			cella.vicinato_allargato[15] = giuDx.vicini[7]  
 			cella.vicinato_allargato[14] = giuDx.vicini[6]    
-			cella.vicinato_allargato[13] = giuDx.vicini[5]   
+			#cella.vicinato_allargato[13] = giuDx.vicini[5] 
+		if cella.vicini[6] != null:
+			var giu = cella.vicini[6]
+			cella.vicinato_allargato[13] = giu.vicini[6]  
 		if cella.vicini[5] != null:
 			var giuSx = cella.vicini[5]
 			cella.vicinato_allargato[12] = giuSx.vicini[6] 
 			cella.vicinato_allargato[11] = giuSx.vicini[5] 
 			cella.vicinato_allargato[9] = giuSx.vicini[3] 
-			cella.vicinato_allargato[7] = giuSx.vicini[0] 
 		
 	#Ultima riga collassata a muro x fare pavimento
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
@@ -129,18 +140,19 @@ func _ready():
 		self.celle[i].label.text = str(i)
 		self.livello.add_child(self.celle[i])
 
-var test_counter = 0
-var numero_CA = 12
+var count = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if self.test_counter < self.numero_CA:
+	while self.count < 20:
 		cellular_automata()
-		self.test_counter += 1
-	if self.test_counter == (self.numero_CA):
-		for i in range(self.celle.size()):
-			self.celle[i].correggi()
+		#TODO METODO CORREZIONI
+		self.count += 1
 
-#Determina il nuovo stato delle celle
 func cellular_automata():
+	var nuova_griglia_stati = []
 	for i in range(self.celle.size()):
-		self.celle[i].determina_tipo()
+		if i == 49:
+			pass
+		nuova_griglia_stati.append(self.celle[i].determina_tipo())
+	for i in range(self.celle.size()):
+		self.celle[i].set_tipo(nuova_griglia_stati[i])
