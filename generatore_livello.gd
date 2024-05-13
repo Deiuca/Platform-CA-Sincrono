@@ -36,7 +36,7 @@ func _ready():
 	self.livello.position = Vector2(20,20)
 	add_child(self.livello)
 	
-	#Determina il seed del Generatore di mondo
+	#Setta il seed del Generatore Randomico
 	self.randomGenerator.set_seed(self.generator_seed)
 	print(generator_seed)
 	
@@ -57,8 +57,8 @@ func _ready():
 			
 	#A ogni istanza nell'array di celle vengono definiti i suoi vicini
 	for indx in range(self.celle.size()):
-		var cella = self.celle[indx]      #Cella corrente
-		#Pattern: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
+		var cella = self.celle[indx]      
+		#Pattern dei viini: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
 		#Sx
 		if (indx-1) >= 0:
 			cella.vicini[3] = self.celle[indx-1]
@@ -117,13 +117,13 @@ func _ready():
 	for e in range((self.width*self.height)-self.width, (self.width*self.height)):
 		self.celle[e].set_tipo(Init.tipi.MURO)
 	
-	#Pianta i "semi" per le piattaforme
+	#Setta sei celle come PLATFORM
 	for h in range(1,3):
 		var riga = ((((self.height/3)*h)-1)*self.width)-1
 		for w in range(1,4):
 			self.celle[(((self.width/4)*w))+riga].set_tipo(Init.tipi.PLATFORM)
 	
-	#Sprite on screen
+	#Celle on screen
 	#for cella in self.celle:
 	for i in range(self.celle.size()):
 		self.celle[i].label.text = str(i)
@@ -133,13 +133,14 @@ var test_counter = 0
 var numero_CA = 12
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while self.test_counter < self.numero_CA:
+	if self.test_counter < self.numero_CA:
 		cellular_automata()
 		self.test_counter += 1
 	if self.test_counter == (self.numero_CA):
 		for i in range(self.celle.size()):
 			self.celle[i].correggi()
 
+#Determina il nuovo stato delle celle
 func cellular_automata():
 	for i in range(self.celle.size()):
 		self.celle[i].determina_tipo()
