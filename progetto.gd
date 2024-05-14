@@ -14,7 +14,3 @@ func _process(delta):
 			self.remove_child(c)
 			c.queue_free()
 		add_child(generator.instantiate())
-		
-	if Input.is_key_pressed(KEY_I):
-		var gl = self.get_child(0)
-		gl.cellular_automata()

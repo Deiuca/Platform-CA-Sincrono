@@ -79,7 +79,7 @@ func determina_tipo() -> Init.tipi:
 			else: 
 				return Init.tipi.PLATFORM_OBSTACLE_DOWN
 			
-	#(10) Verticale se sopra PLATFORM_OBSTACLE_DOWN down e EDGE DOWN e sotto aria e lontano da platform
+	#(8) Verticale se sopra PLATFORM_OBSTACLE_DOWN down e EDGE DOWN e sotto aria e lontano da platform
 	#	 Se VG hs un PLATFORM_OBSTACLE EDGE_DOWN PLATFORM -> più probabile VER|TICAlE
 	if are_cells_stato([1], [Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.EDGE_DOWN], true) and are_cells_stato([6], Init.tipi.ARIA):
 		if are_cells_stato([21], [Init.tipi.PLATFORM_OBSTACLE, Init.tipi.EDGE_DOWN, Init.tipi.PLATFORM]):
@@ -88,12 +88,12 @@ func determina_tipo() -> Init.tipi:
 			if determina_se_accade(25.0):
 				return Init.tipi.VERTICALE
 	
-	#(11) Verticale se sotto PLATFORM_OBSTACLE
+	#(9) Verticale se sotto PLATFORM_OBSTACLE
 	if are_cells_stato([6], Init.tipi.PLATFORM_OBSTACLE, true):
 		if determina_se_accade(40.0):
 				return Init.tipi.VERTICALE
 	
-	#(12) Se VSx o Sx o VDx o Dx -> % NEMICO
+	#(10) Se VSx o Sx o VDx o Dx -> % NEMICO
 	var cond1 = are_cells_stato([7], Init.tipi.PLATFORM_OBSTACLE, true)
 	var cond2 = are_cells_stato([17], Init.tipi.PLATFORM_OBSTACLE, true)
 	var cond3 = are_cells_stato([18], Init.tipi.PLATFORM_OBSTACLE, true)
@@ -103,17 +103,17 @@ func determina_tipo() -> Init.tipi:
 	
 	#Regole x RAMPE MURO
 	
-	#(13) Se Sx MURO; Dx ARIA; G MURO; GDx NON RAMPA 
+	#(11) Se Sx MURO; Dx ARIA; G MURO; GDx NON RAMPA 
 	if are_cells_stato([3], Init.tipi.MURO) and are_cells_stato([4], Init.tipi.ARIA) and are_cells_stato([6], Init.tipi.MURO, true) and  not are_cells_stato([7], Init.tipi.MURO_RAMPA_DOWN, true) :
 		if determina_se_accade(40.0):
 				return Init.tipi.MURO_RAMPA_DOWN
 	
-	#(14) Se Dx MURO; Sx ARIA; S MURO; SSx NON MURO 
+	#(12) Se Dx MURO; Sx ARIA; S MURO; SSx NON MURO 
 	if are_cells_stato([4], Init.tipi.MURO) and are_cells_stato([3], Init.tipi.ARIA) and are_cells_stato([6], Init.tipi.MURO, true) and not are_cells_stato([5], Init.tipi.MURO_RAMPA_UP, true):
 		if determina_se_accade(40.0):
 				return Init.tipi.MURO_RAMPA_UP
 	
-	#(15) Se Dx e SX MURO -> MURO
+	#(13) Se Dx e SX MURO -> MURO
 	if are_cells_stato([4], Init.tipi.MURO) and are_cells_stato([3], Init.tipi.MURO):
 		return Init.tipi.MURO
 		
