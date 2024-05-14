@@ -73,7 +73,7 @@ func determina_tipo() -> Init.tipi:
 	
 	#(7) Se Sx Dx è platform, può diventare ostacolo. Ostacolo 50% Up 50% Down
 	if(are_cells_stato([3,4], Init.tipi.PLATFORM, true)):
-		if determina_se_accade(25.0):
+		if determina_se_accade(45.0):
 			if determina_se_accade(50.0):
 				return Init.tipi.PLATFORM_OBSTACLE
 			else: 
@@ -85,7 +85,7 @@ func determina_tipo() -> Init.tipi:
 		if are_cells_stato([21], [Init.tipi.PLATFORM_OBSTACLE, Init.tipi.EDGE_DOWN, Init.tipi.PLATFORM]):
 			return Init.tipi.VERTICALE
 		else:
-			if determina_se_accade(15.0):
+			if determina_se_accade(25.0):
 				return Init.tipi.VERTICALE
 	
 	#(11) Verticale se sotto PLATFORM_OBSTACLE
@@ -141,6 +141,14 @@ func correggi():
 	if self.tipo == Init.tipi.MURO_RAMPA_UP and num_vicini_rampa_up > 0:
 		set_tipo(Init.tipi.ARIA)
 	
+	#Controllo che MURO_RAMPA siano posizionte correttamente 
+	if self.tipo == Init.tipi.MURO_RAMPA_UP and (not are_cells_stato([3], Init.tipi.ARIA) or not are_cells_stato([4], Init.tipi.MURO, true)):
+		set_tipo(Init.tipi.ARIA)
+		
+	#Controllo che MURO_RAMPA siano posizionte correttamente 
+	if self.tipo == Init.tipi.MURO_RAMPA_DOWN and (not are_cells_stato([4], Init.tipi.ARIA) or not are_cells_stato([3], Init.tipi.MURO, true)):
+		set_tipo(Init.tipi.ARIA)
+	
 	#Controllo se VERTICALE compatibile con vicinato
 	if self.tipo == Init.tipi.VERTICALE and ( (not are_cells_stato([6], Init.tipi.PLATFORM_OBSTACLE) or not are_cells_stato([1], Init.tipi.ARIA)) and (not are_cells_stato([6], Init.tipi.ARIA) or not are_cells_stato([1], [Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.EDGE_DOWN], true))):
 		set_tipo(Init.tipi.ARIA)
@@ -174,12 +182,16 @@ func correggi():
 	
 	#Se piattaform like e isolata -> ARIA
 	if self.tipo == Init.tipi.PLATFORM or self.tipo == Init.tipi.VERTICALE or self.tipo == Init.tipi.PLATFORM_OBSTACLE or self.tipo == Init.tipi.PLATFORM_OBSTACLE_DOWN or self.tipo == Init.tipi.EDGE_DOWN:
-		if num_vicini_muro > 0 or num_vicini_rampa_down > 0 or num_vicini_rampa_up >0:
+		if num_vicini_muro > 0 or num_vicini_rampa_down > 0 or num_vicini_rampa_up >0 or num_vicini_allargati_muro > 0:
 			set_tipo(Init.tipi.ARIA)
 	
 	#Se MURO RAMPA sopra ha MURO -> MURO
 	if (self.tipo == Init.tipi.MURO_RAMPA_UP or self.tipo == Init.tipi.MURO_RAMPA_DOWN ) and self.vicini[1].tipo == Init.tipi.MURO:
 		set_tipo(Init.tipi.MURO)
+	
+	#Se MURO RAMPA se sotto no muro -> ARIA
+	if (self.tipo == Init.tipi.MURO_RAMPA_UP or self.tipo == Init.tipi.MURO_RAMPA_DOWN ) and not self.vicini[6].tipo == Init.tipi.MURO:
+		set_tipo(Init.tipi.ARIA)
 	
 	#Se PLATFORM è vicina ≠ ARIA o NEMICO -> ARIA
 	if  self.tipo == Init.tipi.PLATFORM and not are_cells_stato([1,6], [Init.tipi.ARIA, Init.tipi.NEMICO], true):
@@ -188,6 +200,9 @@ func correggi():
 	#Se EDGE ha a Dx ≠ ARIA -> ARIA 
 	if self.tipo == Init.tipi.EDGE_DOWN and (not are_cells_stato([4], Init.tipi.ARIA) or not are_cells_stato([3], Init.tipi.PLATFORM)):
 		set_tipo(Init.tipi.ARIA)
+		
+	if self.tipo == Init.tipi.ARIA and are_cells_stato([1,6], Init.tipi.MURO):
+		set_tipo(Init.tipi.MURO)
 
 func are_cells_stato(array_celle , tipo , devono_esistere = false) -> bool:
 	if typeof(tipo) == TYPE_ARRAY:
