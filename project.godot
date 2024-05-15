@@ -18,3 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Init="*res://Init.gd"
+
+[display]
+
+window/size/viewport_width=2000
+window/size/viewport_height=1500

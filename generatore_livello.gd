@@ -17,6 +17,7 @@ var tipi_livello = {
 	Init.tipi.PLATFORM: Init.piattaforma,
 	Init.tipi.PLATFORM_OBSTACLE : Init.piattaforma_ostacolo,
 	Init.tipi.EDGE_DOWN : Init.edge_down,
+	Init.tipi.EDGE_DOWN_SX : Init.edge_down_sx,
 	Init.tipi.PLATFORM_OBSTACLE_DOWN : Init.piattaforma_ostacolo_down,
 	Init.tipi.MURO_RAMPA_DOWN : Init.muro_rampa_down,
 	Init.tipi.MURO_RAMPA_UP : Init.muro_rampa_up,
@@ -139,7 +140,7 @@ func _ready():
 var count = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while self.count < 6:
+	if self.count < 6:
 		cellular_automata()
 		for i in range(self.celle.size()):
 			self.celle[i].correggi()
