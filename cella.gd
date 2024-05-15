@@ -39,7 +39,7 @@ func determina_tipo() -> Init.tipi:
 	#(1) Se tutti vicini sono ARIA % diventi platform
 	if (num_vicini_aria + num_vicini_allargati_aria) == 24 :
 		if( self.tipo == Init.tipi.ARIA ):
-			if determina_se_accade(3.0):
+			if determina_se_accade(10.0):
 				return Init.tipi.PLATFORM 
 	
 	#(2) Se Gsx G Gdx sono muro % diventi muro
@@ -54,14 +54,14 @@ func determina_tipo() -> Init.tipi:
 			return Init.tipi.ARIA
 			
 	#(4) Se Dx è PIATTAFORMA e sotto e sopra è aria, diventa piattaforma
-	if are_cells_stato([4], Init.tipi.PLATFORM, true) and num_vicini_aria == 7 and not are_cells_stato([3], Init.tipi.EDGE_DOWN):
-		if(num_vicini_allargati_piattaforma < 4):
+	if are_cells_stato([4], Init.tipi.PLATFORM, true) and are_cells_stato([6, 1], Init.tipi.ARIA, true ) and not are_cells_stato([3], [Init.tipi.EDGE_DOWN, Init.tipi.VERTICALE]):
+		if not (are_cells_stato([0], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE, Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.VERTICALE], true) or are_cells_stato([2], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE, Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.VERTICALE], true)):
 			if determina_se_accade(20.0):
 				return Init.tipi.PLATFORM
 	
 	#(5) Se Sx è PIATTAFORMA e sotto e sopra è aria, diventa % PLATFORM
-	if are_cells_stato([3], Init.tipi.PLATFORM, true) and num_vicini_aria == 7:
-		if(num_vicini_allargati_piattaforma < 4):
+	if are_cells_stato([3], Init.tipi.PLATFORM, true) and are_cells_stato([6, 1], Init.tipi.ARIA, true):
+		if not (are_cells_stato([0], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE, Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.VERTICALE], true) or are_cells_stato([2], [Init.tipi.PLATFORM, Init.tipi.PLATFORM_OBSTACLE, Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.VERTICALE], true)):
 			if determina_se_accade(20.0):
 				return Init.tipi.PLATFORM
 
@@ -71,13 +71,13 @@ func determina_tipo() -> Init.tipi:
 			if determina_se_accade(40.0):
 				return Init.tipi.EDGE_DOWN
 	
-	#() Se VSx, Sx è platform & Dx aria, % diventa EDGE 
+	#(7) Se VSx, Sx è platform & Dx aria, % diventa EDGE 
 	if(are_cells_stato([4, 16], Init.tipi.PLATFORM, true) and are_cells_stato([1], Init.tipi.ARIA)):
 		if are_cells_stato([3], Init.tipi.ARIA):
 			if determina_se_accade(40.0):
 				return Init.tipi.EDGE_DOWN_SX
 	
-	#(7) Se Sx Dx è platform, può diventare ostacolo. Ostacolo 50% Up 50% Down
+	#(8) Se Sx Dx è platform, può diventare ostacolo. Ostacolo 50% Up 50% Down
 	if(are_cells_stato([3,4], Init.tipi.PLATFORM, true)):
 		if determina_se_accade(45.0):
 			if determina_se_accade(50.0):
@@ -85,21 +85,21 @@ func determina_tipo() -> Init.tipi:
 			else: 
 				return Init.tipi.PLATFORM_OBSTACLE_DOWN
 			
-	#(8) Verticale se sopra PLATFORM_OBSTACLE_DOWN down e EDGE DOWN e sotto aria e lontano da platform
+	#(9) Verticale se sopra PLATFORM_OBSTACLE_DOWN down e EDGE DOWN e sotto aria e lontano da platform
 	#	 Se VG hs un PLATFORM_OBSTACLE EDGE_DOWN PLATFORM -> più probabile VER|TICAlE
 	if are_cells_stato([1], [Init.tipi.PLATFORM_OBSTACLE_DOWN, Init.tipi.EDGE_DOWN, Init.tipi.EDGE_DOWN_SX], true) and are_cells_stato([6], Init.tipi.ARIA):
 		if are_cells_stato([21], [Init.tipi.PLATFORM_OBSTACLE, Init.tipi.EDGE_DOWN, Init.tipi.EDGE_DOWN_SX, Init.tipi.PLATFORM]):
 			return Init.tipi.VERTICALE
 		else:
-			if determina_se_accade(40.0):
+			if determina_se_accade(60.0):
 				return Init.tipi.VERTICALE
 	
-	#(9) Verticale se sotto PLATFORM_OBSTACLE
+	#(10) Verticale se sotto PLATFORM_OBSTACLE
 	if are_cells_stato([6], Init.tipi.PLATFORM_OBSTACLE, true):
-		if determina_se_accade(40.0):
+		if determina_se_accade(60.0):
 				return Init.tipi.VERTICALE
 	
-	#(10) Se VSx o Sx o VDx o Dx -> % NEMICO
+	#(11) Se VSx o Sx o VDx o Dx -> % NEMICO
 	var cond1 = are_cells_stato([7], Init.tipi.PLATFORM_OBSTACLE, true)
 	var cond2 = are_cells_stato([17], Init.tipi.PLATFORM_OBSTACLE, true)
 	var cond3 = are_cells_stato([18], Init.tipi.PLATFORM_OBSTACLE, true)
@@ -109,17 +109,17 @@ func determina_tipo() -> Init.tipi:
 	
 	#Regole x RAMPE MURO
 	
-	#(11) Se Sx MURO; Dx ARIA; G MURO; GDx NON RAMPA 
+	#(12) Se Sx MURO; Dx ARIA; G MURO; GDx NON RAMPA 
 	if are_cells_stato([3], Init.tipi.MURO) and are_cells_stato([4], Init.tipi.ARIA) and are_cells_stato([6], Init.tipi.MURO, true) and  not are_cells_stato([7], Init.tipi.MURO_RAMPA_DOWN, true) :
 		if determina_se_accade(40.0):
 				return Init.tipi.MURO_RAMPA_DOWN
 	
-	#(12) Se Dx MURO; Sx ARIA; S MURO; SSx NON MURO 
+	#(13) Se Dx MURO; Sx ARIA; S MURO; SSx NON MURO 
 	if are_cells_stato([4], Init.tipi.MURO) and are_cells_stato([3], Init.tipi.ARIA) and are_cells_stato([6], Init.tipi.MURO, true) and not are_cells_stato([5], Init.tipi.MURO_RAMPA_UP, true):
 		if determina_se_accade(40.0):
 				return Init.tipi.MURO_RAMPA_UP
 	
-	#(13) Se Dx e SX MURO -> MURO
+	#(14) Se Dx e SX MURO -> MURO
 	if are_cells_stato([4], Init.tipi.MURO) and are_cells_stato([3], Init.tipi.MURO):
 		return Init.tipi.MURO
 		
