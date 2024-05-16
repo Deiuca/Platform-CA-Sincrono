@@ -140,13 +140,14 @@ func _ready():
 var count = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if self.count < 6:
+	if self.count < 10:
 		cellular_automata()
 		for i in range(self.celle.size()):
 			self.celle[i].correggi()
-			pass
-		#TODO METODO CORREZIONI
 		self.count += 1
+	if self.count == 10:
+		for i in range(self.celle.size()):
+			self.celle[i].correggi()
 
 func cellular_automata():
 	var nuova_griglia_stati = []

@@ -39,7 +39,7 @@ func determina_tipo() -> Init.tipi:
 	#(1) Se tutti vicini sono ARIA % diventi platform
 	if (num_vicini_aria + num_vicini_allargati_aria) == 24 :
 		if( self.tipo == Init.tipi.ARIA ):
-			if determina_se_accade(10.0):
+			if determina_se_accade(8.5):
 				return Init.tipi.PLATFORM 
 	
 	#(2) Se Gsx G Gdx sono muro % diventi muro
