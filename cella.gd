@@ -10,8 +10,11 @@ var tipi_livello = {}
 var randomGenerator : RandomNumberGenerator
 
 #Pattern: SuSx, Su, SuDx, Sx, Dx, GiuSx, Giu, GiuDx
+#Pattern:  NW, N, NE, W, E, SW, S, SE
+
 var vicini = [null,null,null,null,null,null,null,null]
 
+#Pattern: NNWW, NNW, NN, NNE, NNEE, NWW, NNEE, WW, EE, SWW, SEE, SSWW, SSW, SS, SSE, SSEE
 var vicinato_allargato = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
 
 func inizializza(tipi_livello : Dictionary, randomGenerator : RandomNumberGenerator):
@@ -26,8 +29,8 @@ var label : Label = Label.new()
 func _ready():
 	#Debug
 	self.label.scale = Vector2(fmod(self.scale.x, 1)-0.2,fmod(self.scale.y, 1)-0.2)
-	#add_child(self.label)
 
+#LE regole
 func determina_tipo() -> Init.tipi:
 	
 	var num_vicini_muro = vicini_con_stato(Init.tipi.MURO)
@@ -227,6 +230,7 @@ func correggi():
 		if are_cells_stato([3], Init.tipi.VERTICALE) or are_cells_stato([4], Init.tipi.VERTICALE):
 			set_tipo(Init.tipi.ARIA)
 
+#Se le celle fornite sono di uno o più tipi
 func are_cells_stato(array_celle , tipo , devono_esistere = false) -> bool:
 	if typeof(tipo) == TYPE_ARRAY:
 		return check_cells_stati(array_celle, tipo, devono_esistere)

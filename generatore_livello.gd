@@ -39,7 +39,7 @@ func _ready():
 	
 	#Setta il seed del Generatore Randomico
 	self.randomGenerator.set_seed(self.generator_seed)
-	print(generator_seed)
+	#print(generator_seed)
 	
 	#Determina la scala delle Celle in base alla dimensione delle texture
 	var tex_size = self.tipi_livello[self.tipi_livello.keys()[0]].get_size()
@@ -136,18 +136,21 @@ func _ready():
 	for i in range(self.celle.size()):
 		self.celle[i].label.text = str(i)
 		self.livello.add_child(self.celle[i])
+		
+	var count = 0
+	while count < 10:
+		cellular_automata()
+		for i in range(self.celle.size()):
+			self.celle[i].correggi()
+		count += 1
+	for i in range(self.celle.size()):
+			self.celle[i].correggi()
+	
 
 var count = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if self.count < 10:
-		cellular_automata()
-		for i in range(self.celle.size()):
-			self.celle[i].correggi()
-		self.count += 1
-	if self.count == 10:
-		for i in range(self.celle.size()):
-			self.celle[i].correggi()
+	pass
 
 func cellular_automata():
 	var nuova_griglia_stati = []
